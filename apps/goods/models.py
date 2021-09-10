@@ -27,6 +27,22 @@ class GoodsCategory(models.Model):
         return self.name
 
 
+class GoodsCategoryBrand(models.Model):
+    """某一大类下的宣传商标"""
+    category = models.ForeignKey(GoodsCategory, verbose_name='商品类别', on_delete=models.CASCADE, null=True, blank=True, related_name='brands')
+    name = models.CharField('品牌名', max_length=30, help_text='品牌名')
+    desc = models.TextField('品牌描述', help_text='品牌描述', max_length=200)
+    image = models.ImageField('品牌图片', upload_to='brands/', max_length=30)
+    add_time = models.DateTimeField('添加时间', default=datetime.now)
+
+    class Meta:
+        verbose_name = '品牌宣传'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
+
+
 class Goods(models.Model):
     """商品"""
     name = models.CharField('商品名称', max_length=100)
@@ -78,6 +94,19 @@ class Banner(models.Model):
 
     class Meta:
         verbose_name = '首页轮播'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.goods.name
+
+
+class IndexAd(models.Model):
+    """商品广告"""
+    category = models.ForeignKey(GoodsCategory, on_delete=models.CASCADE, verbose_name='商品类目', related_name='category')
+    goods = models.ForeignKey(Goods, on_delete=models.CASCADE, verbose_name='商品', related_name='goods')
+
+    class Meta:
+        verbose_name = '首页广告'
         verbose_name_plural = verbose_name
 
     def __str__(self):
